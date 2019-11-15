@@ -91,6 +91,86 @@ public class TestCalc {
         
         cCli.disconnect();
     }
-        
+
+    @Test
+    public void test4() {
+        // Start Client
+        String srvIP   = "localhost"; //"127.0.0.1";
+        int      srvPort = 12348;
+
+        // Start Server
+        CalcSocketServer cSrv = new CalcSocketServer(srvPort);
+        cSrv.start();
+        cSrv.waitUnitlRunnig();
+
+        CalcSocketClient cCli = new CalcSocketClient();
+        cCli.connectTo(srvIP, srvPort);
+
+        //Test
+        String req31 = "6 AD  MUL  1   ASM  ADD ABC 10    5  SUB 100 ADD10   ADD";
+        cCli.calculate("24 foo 42 <" + (req31.length() + 5) + ":" + req31 + ">");
+
+        String req32 = "60 4 MUL -2 RES  ";
+        cCli.calculate("a faq 23 <" + (req32.length() + 5) + ":" + req32 + "> bla 42 ");
+
+        assertEquals(42,cCli.getCalcRes());
+        assertEquals(5, cCli.getRcvdErs());
+
+        cCli.disconnect();
+    }
+
+    @Test
+    public void test5() {
+        // Start Client
+        String srvIP  = "localhost"; //"127.0.0.1";
+        int      srvPort = 12349;
+
+        // Start Server
+        CalcSocketServer cSrv = new CalcSocketServer(srvPort);
+        cSrv.start();
+        cSrv.waitUnitlRunnig();
+
+        CalcSocketClient cCli = new CalcSocketClient();
+        cCli.connectTo(srvIP, srvPort);
+
+        //Test
+        String req31 = "6 AD  MUL  1   ASM  ADD ABC 10    5  SUB 100 ADD10   ADD";
+        cCli.calculate("24 foo 42 <" + (req31.length() + 5) + ":" + req31 + ">");
+
+        String req32 = "60 4 MUL -2 RES  ADD 1 RES";
+        cCli.calculate("a faq 23 <" + (req32.length() + 5) + ":" + req32 + "> bla 42 ");
+
+        assertEquals(43,cCli.getCalcRes());
+        assertEquals(5, cCli.getRcvdErs());
+
+        cCli.disconnect();
+    }
+
+    @Test
+    public void test6() {
+        // Start Client
+        String srvIP = "localhost"; //"127.0.0.1";
+        int srvPort = 12350;
+
+        // Start Server
+        CalcSocketServer cSrv = new CalcSocketServer(srvPort);
+        cSrv.start();
+        cSrv.waitUnitlRunnig();
+
+        CalcSocketClient cCli = new CalcSocketClient();
+        cCli.connectTo(srvIP, srvPort);
+
+
+        //Test
+        String req31 = "ADD  --1   ASM  ADD 10 RES";
+        cCli.calculate("24 foo 42 <" + (req31.length() + 5) + ":" + req31 + ">");
+
+        assertEquals(10,cCli.getCalcRes());
+        assertEquals(2, cCli.getRcvdErs());
+
+        cCli.disconnect();
+    }
+
+
 
 }
