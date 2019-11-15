@@ -1,195 +1,181 @@
 package de.unistgt.ipvs.vs.ex1.server;
 
+import de.unistgt.ipvs.vs.ex1.common.ICalculation;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.rmi.RemoteException;
-import java.util.regex.Matcher;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.regex.Pattern;
 
 /**
  * Add fields and methods to this class as necessary to fulfill the assignment.
  */
 public class CalculationSession implements Runnable {
+    private Socket socket;
+    private ObjectInputStream oisIn;
+    private ObjectOutputStream oosOut;
 
-	private Socket cliSocket; // --> Socket of the connected client of current thread
-	private ObjectOutputStream out;
-	private ObjectInputStream in;
-	private CalculationImpl calc;
-	private String calcOp;
-	// Pattern for messages ("...<dd:message>...)
-	Pattern patternMessage = Pattern.compile(".*(<(\\d{2}):(.+?)>).*", Pattern.CASE_INSENSITIVE);
+    private boolean needRES;
+    private int calState;
+    private boolean startCal;  // flag
+    private boolean calStateChange;
 
-	public CalculationSession(Socket cliSocket) throws RemoteException {
-		this.cliSocket = cliSocket;
-		this.calcOp = null;
-		this.calc = new CalculationImpl();
-	}
+    private CalculationImpl res;
+    private Queue<String> queue = new LinkedList<String>();
 
-	public void run() {
-		try {
-			// Prepare input and output streams
-			out = new ObjectOutputStream(cliSocket.getOutputStream());
-			in = new ObjectInputStream(cliSocket.getInputStream());
-			// Send READY-Message to client
-			out.writeObject("<08:RDY>");
+    public CalculationSession(Socket socket) {
+        this.socket = socket;
+        this.needRES = false;
+        this.calState = 0;
+        this.startCal = false;
+        this.calStateChange = false;
+        try {
+            this.oisIn = new ObjectInputStream(this.socket.getInputStream());
+            this.oosOut = new ObjectOutputStream(this.socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-			// Process incoming messages
-			String message = "";
-			while (true) {
-				message = (String) in.readObject();
-				// Catch clients disconnect message to end session
-				if (message.equals("DISCONNECT")) {
-					in.close();
-					out.close();
-					cliSocket.close();
-					return;
-				}
-				// Respond with OK to each message (besides disconnect)
-				out.writeObject("<07:OK>");
-				// Process message and respond to client
-				processMessage(message);
-			}
-		} catch (IOException | ClassNotFoundException e) {
-			// End session if failures occur
-			e.printStackTrace();
-			return;
-		}
-	}
+        try{
+            this.res = new CalculationImpl();
+        }catch (RemoteException e){
+            e.printStackTrace();
+        }
+    }
+    public void run() {
+        try {
+            //System.out.println("testrun");
+            this.oosOut.writeObject(msgCreat("RDY", null));
+            //oosOut.flush();
+            String msg = " ";
+            while(true){
+                msg = (String) this.oisIn.readObject();
+                if("DISCONNECTED".equals(msg)) return;
+                this.oosOut.writeObject(msgCreat("OK", null));
+                msgHandle(msg);
+            }
 
-	/**
-	 * This method processes incoming messages by checking it's format, content and
-	 * sending appropriate responses to the client.
-	 * 
-	 * @param message
-	 * @throws IOException
-	 */
-	private void processMessage(String message) throws IOException {
-		// Create matcher for incoming message
-		Matcher matcher = patternMessage.matcher(message);
-		// If message valid
-		if (matcher.matches()) {
-			String inputMessage = matcher.group(1); // Full message (without stuff before "<" and after ">"
-			String inputLength = matcher.group(2); // Length of Message (digits at beginning)
-			String inputContent = matcher.group(3).toUpperCase(); // Contents of message
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
 
-			// Return basic error if given message length does not match the message
-			if (inputMessage.length() != Integer.parseInt(inputLength)) {
-				out.writeObject("<08:ERR>");
-				return;
-			}
+    }
+    public void msgHandle(String msg) throws IOException {
+        msgFilterSplitQueue(msg);
+        compute();
+        this.oosOut.writeObject(msgCreat("FIN", null));
+        System.out.println("finished");
+    }
 
-			// Split contents at whitespace(s)
-			String[] contents = inputContent.split("\\s+");
+    public String msgCreat(String Ack, String content) {
+        String msg = " ";
+        Ack = Ack.toUpperCase();
+        switch (Ack) {
+            case "RDY": {
+                msg = "<08:RDY>";
+                break;
+            }
+            case "FIN": {
+                msg = "<08:FIN>";
+                break;
+            }
+            case "OK": {
+                if(content!=null)
+                    msg = "<"+(content.length()+8)+":OK "+content+">";
+                else msg = "<07:OK>";
+                break;
+            }
+            case "ERR": {
+                if(content!=null)
+                    msg = "<"+(content.length()+9)+":ERR "+content+">";
+                else msg = null;
+                break;
+            }
+            case "RES": {
+                if(content!=null)
+                    msg = "<"+(content.length()+12)+":OK RES "+content+">";
+                else msg = null;
+                break;
+            }
+            default: System.out.println("Ack error!");break;
+        }
+        return msg;
+    }
 
-			// For each operator inside message content
-			for (String content : contents) {
-				// Try to parse supported operations
-				switch (content) {
-				case "ADD":
-					calcOp = content;
-					replyToMessageContent(content, "OK");
-					break;
-				case "SUB":
-					calcOp = content;
-					replyToMessageContent(content, "OK");
-					break;
-				case "MUL":
-					calcOp = content;
-					replyToMessageContent(content, "OK");
-					break;
-				case "RES":
-					calcOp = content;
-					replyToMessageContent(content, "OK");
-					break;
-				case "":
-					// Ignore empty strings that are not removed during the string-split
-					break;
-				default:
-					// Try to parse operation as number
-					try {
-						int value = Integer.valueOf(content);
-						// If content is number, then check if calculation operation is set
-						if (calcOp == null) {
-							// Error if content is neither number nor calculation operation
-							replyToMessageContent(content, "ERR");
-							break;
-						}
-						// Perform calculation with number
-						performCalcOperation(value, calcOp);
-						replyToMessageContent(content, "OK");
-					} catch (NumberFormatException e) {
-						// Error if content is neither number nor calculation operation
-						replyToMessageContent(content, "ERR");
-					}
-				}
-			}
-		}
+    public void msgFilterSplitQueue(String msg){
+        String[] strArray = null;
+        String content = msg.substring(msg.indexOf(":")+1, msg.indexOf(">"));
+        content = content.trim();
+        strArray = content.split("\\s+");
+        for (String p : strArray){
+            this.queue.offer(p);
+        }
+    }
 
-		// Reply to client with 'FIN' after processing the whole message
-		out.writeObject("<08:FIN>");
-	}
+    public void compute() throws IOException {
+        if(queue.isEmpty())
+            return;
 
-	/**
-	 * This method performs a calculation operation with the number from the message
-	 * content and the last set calculation operation (ADD, SUB, MUL).
-	 * 
-	 * @param value
-	 * @param calcOp
-	 * @throws RemoteException
-	 */
-	private void performCalcOperation(int value, String calcOp) throws RemoteException {
-		switch (calcOp) {
-		case "ADD":
-			calc.add(value);
-			break;
-		case "SUB":
-			calc.subtract(value);
-			break;
-		case "MUL":
-			calc.multiply(value);
-			break;
-		}
-	}
+        while(!queue.isEmpty()) {
+            String p = queue.poll();
+            updateOperation(p);
+            if(calStateChange) {
+                startCal = true;
+                if(needRES) {
+                    this.oosOut.writeObject(msgCreat("RES", Integer.toString(res.getResult())));
+                    needRES = false;
+                    continue;
+                }
+                this.oosOut.writeObject(msgCreat("OK", p));
+            } else if(!calStateChange) {
+                if(!startCal) {
+                    this.oosOut.writeObject(msgCreat("ERR", p));
+                } else {
+                    if(isInteger(p)) {
+                        this.oosOut.writeObject(msgCreat("OK", p));
+                        calculate(calState, p);
+                    }
+                    else {
+                        this.oosOut.writeObject(msgCreat("ERR", p));
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * This method creates a appropriate reply message according to the content and
-	 * the operator it's validity.
-	 * 
-	 * @param content
-	 * @param status
-	 * @throws IOException
-	 */
-	public void replyToMessageContent(String content, String status) throws IOException {
-		int headerLength = 0;
+    public void updateOperation(String p) {
+        p = p.toUpperCase();
+        switch (p){
+            case "ADD": this.calState = 1; this.calStateChange = true; break;
+            case "SUB": this.calState = 2; this.calStateChange = true; break;
+            case "MUL": this.calState = 3; this.calStateChange = true; break;
+            case "RES": needRES = true; this.calStateChange = true; break;
+            default: this.calStateChange = false; break;
+        }
 
-		if (status.equals("OK") && !content.equals("RES")) {
-			headerLength = 6 + status.length() + content.length(); // 6 -> because of <, 2xDigit, :, whitespace, >
-			out.writeObject("<" + getHeaderLengthText(headerLength) + ":" + status + " " + content + ">");
-		}
-		if (status.equals("ERR")) {
-			headerLength = 6 + status.length() + content.length(); // 6 -> because of <, 2xDigit, :, whitespace, >
-			out.writeObject("<" + getHeaderLengthText(headerLength) + ":" + status + " " + content + ">");
-		}
-		if (status.equals("OK") && content.equals("RES")) {
-			int result = calc.getResult();
-			// 7 -> because of<, 2xDigit, :, 2x whitespace, >
-			headerLength = 7 + status.length() + content.length() + String.valueOf(result).length();
-			out.writeObject(
-					"<" + getHeaderLengthText(headerLength) + ":" + status + " " + content + " " + result + ">");
-		}
-	}
+    }
 
-	/**
-	 * This method returns the String representation of the length of the respnse
-	 * message.
-	 * 
-	 * @param headerLength
-	 * @return lengthAsString
-	 */
-	public String getHeaderLengthText(int headerLength) {
-		return headerLength < 10 ? "0" + headerLength : String.valueOf(headerLength);
-	}
+    public boolean isInteger(String p) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(p).matches();
+    }
 
+    public void calculate(int calState, String p){
+        try {
+            int val = Integer.parseInt(p);
+            switch (calState) {
+                case 1: res.add(val); break;
+                case 2: res.subtract(val); break;
+                case 3: res.multiply(val); break;
+                default: break;
+            }
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+
+    }
 }

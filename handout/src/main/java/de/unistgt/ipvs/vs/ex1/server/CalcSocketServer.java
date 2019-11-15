@@ -3,7 +3,6 @@ package de.unistgt.ipvs.vs.ex1.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.RemoteException;
 
 /**
  * Extend the run-method of this class as necessary to complete the assignment.
@@ -11,70 +10,66 @@ import java.rmi.RemoteException;
  */
 public class CalcSocketServer extends Thread {
 	private ServerSocket srvSocket;
-	private Socket cliSocket;
 	private int port;
 
 	public CalcSocketServer(int port) {
-		this.srvSocket = null;
-		this.cliSocket = null;
-		this.port = port;
+	    this.port = port;
+        this.srvSocket = null;
 	}
-
+	
 	@Override
 	public void interrupt() {
 		try {
-			if (srvSocket != null)
-				srvSocket.close();
+			if (srvSocket != null) srvSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void run() {	
-		// If invalid port -> crash
-		if (port <= 0) {
+	public void run() {
+           
+		if (this.port <= 0) {
+			System.err.println("Wrong number of arguments.\nUsage: SocketServer <listenPort>\n");
 			System.exit(-1);
 		}
-
-		try {
-			// Start new server socket at given port
-			srvSocket = new ServerSocket(port);
-		} catch (IOException e) {
-			// Crash if you cant open server socket
-			e.printStackTrace();
-			System.exit(-1);
-		}
-
+        try {
+            this.srvSocket = new ServerSocket(this.port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 		// Start listening server socket ..
-		while (true) {
-			try {
-				// Wait for incoming clients
-				cliSocket = srvSocket.accept();
-			} catch (IOException e) {
-				// Can't establish connection with new client
-				e.printStackTrace();
-				continue;
-			}
-			
-			// Create and start a new session for new client
-			CalculationSession newSession;
-			try {
-				newSession = new CalculationSession(cliSocket);
-				newSession.run();
-			} catch (RemoteException e) {
-				// Print remote exception for debugging purposes
-				e.printStackTrace();
-			}
-		}
+        System.out.println("S:Listening...");
+        while(true) {
+            try {
+                Socket socket = srvSocket.accept();
+                System.out.println("New Client is connected, begin a new Thread.");
+                CalculationSession session = new CalculationSession(socket);
+                new Thread(session).start();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
 	}
 
-	public void waitUnitlRunnig() {
-		while (this.srvSocket == null) {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException ex) {
-			}
-		}
-	}
+    public void waitUnitlRunnig(){
+        while(this.srvSocket == null){
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        CalcSocketServer cSrv = new CalcSocketServer(12346);
+        cSrv.start();
+        cSrv.waitUnitlRunnig();
+    }
 }
