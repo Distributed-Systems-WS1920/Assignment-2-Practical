@@ -31,14 +31,29 @@ public class CalcSocketClient {
 		out = null;
 	}
 
+	/**
+	 * Returns amount of received OK messages
+	 * 
+	 * @return rcvdOKs
+	 */
 	public int getRcvdOKs() {
 		return rcvdOKs;
 	}
 
+	/**
+	 * Returns amount of received ERROR messages
+	 * 
+	 * @return rcvdErs
+	 */
 	public int getRcvdErs() {
 		return rcvdErs;
 	}
 
+	/**
+	 * Returns the calculation result
+	 * 
+	 * @return calcRes
+	 */
 	public int getCalcRes() {
 		return calcRes;
 	}

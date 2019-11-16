@@ -21,12 +21,21 @@ public class CalculationSession implements Runnable {
 	// Pattern for messages ("...<dd:message>...)
 	Pattern patternMessage = Pattern.compile(".*(<(\\d{2}):(.+?)>).*", Pattern.CASE_INSENSITIVE);
 
+	/**
+	 * Constructor that initializes the Session-Object.
+	 * 
+	 * @param cliSocket
+	 * @throws RemoteException
+	 */
 	public CalculationSession(Socket cliSocket) throws RemoteException {
 		this.cliSocket = cliSocket;
 		this.calcOp = null;
 		this.calc = new CalculationImpl();
 	}
 
+	/**
+	 * Method that gets executed when the thread is started.
+	 */
 	public void run() {
 		try {
 			// Prepare input and output streams

@@ -1,0 +1,6 @@
+Team: G3T8
+Members:
+  - Delong Kong
+  - Min Wang
+  - Tung Dinh
+  - Stefan Basaric

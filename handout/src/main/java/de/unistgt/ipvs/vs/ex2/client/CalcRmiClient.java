@@ -18,6 +18,11 @@ public class CalcRmiClient {
 		this.calc = null;
 	}
 
+	/**
+	 * This method returns the result of the calculation
+	 * 
+	 * @return result
+	 */
 	public int getCalcRes() {
 		try {
 			return calc.getResult();
@@ -29,16 +34,22 @@ public class CalcRmiClient {
 		}
 	}
 
+	/**
+	 * This method initializes the RMI-Connection with a given url.
+	 * 
+	 * @param url
+	 * @return connectionSuccessfull
+	 */
 	public boolean init(String url) {
-		if(this.calc != null) {
+		if (this.calc != null) {
 			// Can't init twice
 			return false;
 		}
-		
+
 		try {
 			ICalculationFactory factory = (ICalculationFactory) Naming.lookup(url);
 			this.calc = factory.getSession();
-			
+
 		} catch (Exception e) {
 			// Log error if something went wrong
 			e.printStackTrace();
@@ -48,6 +59,14 @@ public class CalcRmiClient {
 		return true;
 	}
 
+	/**
+	 * This method performs a calculation with a set of numbers and a specific
+	 * calculation operator like ADD, SUBTRACT or MULTIPLY.
+	 * 
+	 * @param calcMode
+	 * @param numbers
+	 * @return calculationSuccessfull
+	 */
 	public boolean calculate(CalculationMode calcMode, Collection<Integer> numbers) {
 		try {
 			// Perform given operation for every number in collection
@@ -56,10 +75,10 @@ public class CalcRmiClient {
 				switch (calcMode) {
 				case ADD:
 					calc.add(number);
-				    break;
+					break;
 				case SUB:
 					calc.subtract(number);
-				    break;
+					break;
 				case MUL:
 					calc.multiply(number);
 					break;
