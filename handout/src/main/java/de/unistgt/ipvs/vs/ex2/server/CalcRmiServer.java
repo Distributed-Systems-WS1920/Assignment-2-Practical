@@ -2,6 +2,9 @@ package de.unistgt.ipvs.vs.ex2.server;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.ExportException;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.util.logging.Level;
@@ -30,9 +33,14 @@ public class CalcRmiServer extends Thread {
 		}
 
 		try {
-			// Bind our service to the given url
+			try {
+				// Try to create registry
+				LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+			} catch (ExportException e) {
+				System.out.println("Cannot create Registry. Assume that one already exist.");
+			}
+			// Bind our service to the given name
 			Naming.rebind(url, new CalculationImplFactory());
-			System.out.println("Binding of Factory was successful!");
 		} catch (Exception e) {
 			System.err.println("Object binding failed!");
 			e.printStackTrace();

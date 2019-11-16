@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.068s</div>
+<div class="counter">0.051s</div>
 <p>duration</p>
 </div>
 </td>
@@ -63,6 +63,9 @@
 <li>
 <a href="#tab0">Tests</a>
 </li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -76,35 +79,245 @@
 </thead>
 <tr>
 <td class="success">test1</td>
-<td class="success">0.048s</td>
+<td class="success">0.012s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">test2</td>
-<td class="success">0.005s</td>
+<td class="success">0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">test3</td>
-<td class="success">0.004s</td>
+<td class="success">0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">test4</td>
-<td class="success">0.003s</td>
+<td class="success">0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">test5</td>
-<td class="success">0.005s</td>
+<td class="success">0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">test6</td>
-<td class="success">0.003s</td>
+<td class="success">0.006s</td>
 <td class="success">passed</td>
 </tr>
 </table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>Server-Socket opened at port: 12345
+Connected to new client
+Sent READY message to client. Now waiting for requests...s
+Got READY message from server
+Sent '&lt;24:ADD 1 2 3 SUB 3 2 1&gt;' to server
+Got a syntactically correct request from client
+Reply to correct 'ADD' operator
+Added value: 1 to result
+Reply to correct '1' operator
+Added value: 2 to result
+Reply to correct '2' operator
+Added value: 3 to result
+Reply to correct '3' operator
+Reply correct 'SUB' operator
+Subtracted value: 3 from result
+Reply to correct '3' operator
+Subtracted value: 2 from result
+Reply to correct '2' operator
+Subtracted value: 1 from result
+Reply to correct '1' operator
+Sent FIN message to client
+Request was processed by server
+Sent '&lt;08:rEs&gt;' to server
+Got a syntactically correct request from client
+Reply to correct 'RES' operator
+Sent FIN message to client
+Request was processed by server
+Disconnect was successfull
+Client disconnected, ending session.
+Started a new Session for client
+Server-Socket opened at port: 12346
+Connected to new client
+Sent READY message to client. Now waiting for requests...s
+Got READY message from server
+Sent '&lt;50:Add -3 ASM -2 ABC -1 SUB -1 ASM10 -2 ABC09 -3&gt;' to server
+Got a syntactically correct request from client
+Reply to correct 'ADD' operator
+Added value: -3 to result
+Reply to correct '-3' operator
+Reply to incorrect 'ASM' operator
+Added value: -2 to result
+Reply to correct '-2' operator
+Reply to incorrect 'ABC' operator
+Added value: -1 to result
+Reply to correct '-1' operator
+Reply correct 'SUB' operator
+Subtracted value: -1 from result
+Reply to correct '-1' operator
+Reply to incorrect 'ASM10' operator
+Subtracted value: -2 from result
+Reply to correct '-2' operator
+Reply to incorrect 'ABC09' operator
+Subtracted value: -3 from result
+Reply to correct '-3' operator
+Sent FIN message to client
+Request was processed by server
+Sent '&lt;08:rEs&gt;' to server
+Got a syntactically correct request from client
+Reply to correct 'RES' operator
+Sent FIN message to client
+Request was processed by server
+Disconnect was successfull
+Client disconnected, ending session.
+Started a new Session for client
+Server-Socket opened at port: 12347
+Connected to new client
+Sent READY message to client. Now waiting for requests...s
+Got READY message from server
+Sent '24 foo 42 &lt;57:  MUL  1   ASM  ADD ABC 10    5  SUB 100 ADD10   ADD&gt;' to server
+Got a syntactically correct request from client
+Reply to correct 'MUL' operator
+Multiplied value: 1 to result
+Reply to correct '1' operator
+Reply to incorrect 'ASM' operator
+Reply to correct 'ADD' operator
+Reply to incorrect 'ABC' operator
+Added value: 10 to result
+Reply to correct '10' operator
+Added value: 5 to result
+Reply to correct '5' operator
+Reply correct 'SUB' operator
+Subtracted value: 100 from result
+Reply to correct '100' operator
+Reply to incorrect 'ADD10' operator
+Reply to correct 'ADD' operator
+Sent FIN message to client
+Request was processed by server
+Sent 'a faq 23 &lt;22:60 4 MUL -2 RES  &gt; bla 42 ' to server
+Got a syntactically correct request from client
+Added value: 60 to result
+Reply to correct '60' operator
+Added value: 4 to result
+Reply to correct '4' operator
+Reply to correct 'MUL' operator
+Multiplied value: -2 to result
+Reply to correct '-2' operator
+Reply to correct 'RES' operator
+Sent FIN message to client
+Request was processed by server
+Disconnect was successfull
+Client disconnected, ending session.
+Started a new Session for client
+Server-Socket opened at port: 12348
+Connected to new client
+Sent READY message to client. Now waiting for requests...s
+Got READY message from server
+Sent '24 foo 42 &lt;61:6 AD  MUL  1   ASM  ADD ABC 10    5  SUB 100 ADD10   ADD&gt;' to server
+Got a syntactically correct request from client
+Operator is '6', but no calc operation is set
+Reply to incorrect 'AD' operator
+Reply to correct 'MUL' operator
+Multiplied value: 1 to result
+Reply to correct '1' operator
+Reply to incorrect 'ASM' operator
+Reply to correct 'ADD' operator
+Reply to incorrect 'ABC' operator
+Added value: 10 to result
+Reply to correct '10' operator
+Added value: 5 to result
+Reply to correct '5' operator
+Reply correct 'SUB' operator
+Subtracted value: 100 from result
+Reply to correct '100' operator
+Reply to incorrect 'ADD10' operator
+Reply to correct 'ADD' operator
+Sent FIN message to client
+Request was processed by server
+Sent 'a faq 23 &lt;22:60 4 MUL -2 RES  &gt; bla 42 ' to server
+Got a syntactically correct request from client
+Added value: 60 to result
+Reply to correct '60' operator
+Added value: 4 to result
+Reply to correct '4' operator
+Reply to correct 'MUL' operator
+Multiplied value: -2 to result
+Reply to correct '-2' operator
+Reply to correct 'RES' operator
+Sent FIN message to client
+Request was processed by server
+Client disconnected, ending session.
+Started a new Session for client
+Disconnect was successfull
+Server-Socket opened at port: 12349
+Connected to new client
+Sent READY message to client. Now waiting for requests...s
+Got READY message from server
+Sent '24 foo 42 &lt;61:6 AD  MUL  1   ASM  ADD ABC 10    5  SUB 100 ADD10   ADD&gt;' to server
+Got a syntactically correct request from client
+Operator is '6', but no calc operation is set
+Reply to incorrect 'AD' operator
+Reply to correct 'MUL' operator
+Multiplied value: 1 to result
+Reply to correct '1' operator
+Reply to incorrect 'ASM' operator
+Reply to correct 'ADD' operator
+Reply to incorrect 'ABC' operator
+Added value: 10 to result
+Reply to correct '10' operator
+Added value: 5 to result
+Reply to correct '5' operator
+Reply correct 'SUB' operator
+Subtracted value: 100 from result
+Reply to correct '100' operator
+Reply to incorrect 'ADD10' operator
+Reply to correct 'ADD' operator
+Sent FIN message to client
+Request was processed by server
+Sent 'a faq 23 &lt;31:60 4 MUL -2 RES  ADD 1 RES&gt; bla 42 ' to server
+Got a syntactically correct request from client
+Added value: 60 to result
+Reply to correct '60' operator
+Added value: 4 to result
+Reply to correct '4' operator
+Reply to correct 'MUL' operator
+Multiplied value: -2 to result
+Reply to correct '-2' operator
+Reply to correct 'RES' operator
+Reply to correct 'ADD' operator
+Added value: 1 to result
+Reply to correct '1' operator
+Reply to correct 'RES' operator
+Sent FIN message to client
+Request was processed by server
+Client disconnected, ending session.
+Started a new Session for client
+Disconnect was successfull
+Server-Socket opened at port: 12350
+Connected to new client
+Sent READY message to client. Now waiting for requests...s
+Got READY message from server
+Sent '24 foo 42 &lt;31:ADD  --1   ASM  ADD 10 RES&gt;' to server
+Got a syntactically correct request from client
+Reply to correct 'ADD' operator
+Reply to incorrect '--1' operator
+Reply to incorrect 'ASM' operator
+Reply to correct 'ADD' operator
+Added value: 10 to result
+Reply to correct '10' operator
+Reply to correct 'RES' operator
+Sent FIN message to client
+Request was processed by server
+Client disconnected, ending session.
+Disconnect was successfull
+Started a new Session for client
+</pre>
+</span>
 </div>
 </div>
 <div id="footer">
@@ -114,7 +327,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 4.7</a> at 16.11.2019 16:42:25</p>
+<a href="http://www.gradle.org">Gradle 4.7</a> at 16.11.2019 17:35:59</p>
 </div>
 </div>
 </body>

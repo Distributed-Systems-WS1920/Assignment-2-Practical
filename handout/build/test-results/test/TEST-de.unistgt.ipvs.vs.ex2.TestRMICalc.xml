@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="de.unistgt.ipvs.vs.ex2.TestRMICalc" tests="2" skipped="0" failures="0" errors="0" timestamp="2019-11-16T15:42:18" hostname="DESKTOP-MBLC0JR" time="6.032">
+<testsuite name="de.unistgt.ipvs.vs.ex2.TestRMICalc" tests="2" skipped="0" failures="0" errors="0" timestamp="2019-11-16T16:35:52" hostname="DESKTOP-MBLC0JR" time="6.03">
   <properties/>
   <testcase name="test1" classname="de.unistgt.ipvs.vs.ex2.TestRMICalc" time="3.021"/>
-  <testcase name="test2" classname="de.unistgt.ipvs.vs.ex2.TestRMICalc" time="3.011"/>
-  <system-out><![CDATA[Binding of Factory was successful!
-Binding of Factory was successful!
+  <testcase name="test2" classname="de.unistgt.ipvs.vs.ex2.TestRMICalc" time="3.009"/>
+  <system-out><![CDATA[Got Remote-Factory and created Session from it
+Added number: 1
+Added number: 2
+Added number: 3
+Subtracted number: 3
+Subtracted number: 2
+Subtracted number: 1
+Cannot create Registry. Assume that one already exist.
+Got Remote-Factory and created Session from it
+Added number: 1
+Added number: 2
+Added number: 3
+Subtracted number: 3
+Subtracted number: 2
+Subtracted number: 1
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
