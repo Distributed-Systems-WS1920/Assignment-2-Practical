@@ -44,7 +44,8 @@ public class CalcRmiServer extends Thread {
 	}
 
 	/**
-	 * This method creates a registry if none is existing.
+	 * This method to create and export a Registry-Instance on the localhost that
+	 * accepts requests on the default port (1099).
 	 */
 	public void createRegistry() {
 		try {
