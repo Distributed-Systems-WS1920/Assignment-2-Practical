@@ -33,17 +33,29 @@ public class CalcRmiServer extends Thread {
 		}
 
 		try {
-			try {
-				// Try to create registry
-				LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-			} catch (ExportException e) {
-				System.out.println("Cannot create Registry. Assume that one already exist.");
-			}
+			// Create registry
+			createRegistry();
 			// Bind our service to the given name
 			Naming.rebind(url, new CalculationImplFactory());
 		} catch (Exception e) {
 			System.err.println("Object binding failed!");
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This method creates a registry if none is existing.
+	 */
+	public void createRegistry() {
+		try {
+			// Try to create registry
+			LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+		} catch (ExportException e) {
+			// ExportExceptions is thrown if a Registry already exists
+			System.out.println("Cannot create Registry. Assume that one already exist.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Cannot create Registry");
 		}
 	}
 
