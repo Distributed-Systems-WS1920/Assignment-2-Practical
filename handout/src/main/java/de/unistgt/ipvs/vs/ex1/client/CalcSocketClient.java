@@ -108,7 +108,7 @@ public class CalcSocketClient {
 				message = (String) in.readObject();
 			} catch (IOException | ClassNotFoundException e) {
 				// Print IO Exceptions for debug purposes and continue processing
-				System.out.println("Could not read a valid message comming from server");
+				System.err.println("Could not read a valid message comming from server");
 				e.printStackTrace();
 			}
 
@@ -159,7 +159,7 @@ public class CalcSocketClient {
 			System.out.println("Sent '" + request + "' to server");
 		} catch (IOException e1) {
 			// Print exception for debugging purposes
-			System.out.println("Could not send '" + request + "' to server");
+			System.err.println("Could not send '" + request + "' to server");
 			e1.printStackTrace();
 			return false;
 		}

@@ -53,7 +53,7 @@ public class CalcRmiClient {
 
 		} catch (Exception e) {
 			// Log error if something went wrong
-			System.out.println("Could not obtain remote Factory");
+			System.err.println("Could not obtain remote Factory");
 			e.printStackTrace();
 			return false;
 		}
@@ -91,7 +91,7 @@ public class CalcRmiClient {
 			}
 		} catch (RemoteException e) {
 			// Print remote exception for debugging purposes
-			System.out.println("Could not perform remote calculation");
+			System.err.println("Could not perform remote calculation");
 			e.printStackTrace();
 			// Return that something went wrong
 			return false;

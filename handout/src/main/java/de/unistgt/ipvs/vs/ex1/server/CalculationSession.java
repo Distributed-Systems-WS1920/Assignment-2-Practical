@@ -90,7 +90,7 @@ public class CalculationSession implements Runnable {
 			// Return basic error if given message length does not match the message
 			if (inputMessage.length() != Integer.parseInt(inputLength)) {
 				out.writeObject("<08:ERR>");
-				System.err.println("Length from message does not match real length");
+				System.out.println("Length from message does not match real length");
 				return;
 			}
 
