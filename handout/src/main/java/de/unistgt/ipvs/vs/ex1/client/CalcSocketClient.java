@@ -108,11 +108,13 @@ public class CalcSocketClient {
 				message = (String) in.readObject();
 			} catch (IOException | ClassNotFoundException e) {
 				// Print IO Exceptions for debug purposes and continue processing
+				System.out.println("Could not read a valid message comming from server");
 				e.printStackTrace();
 			}
 
 			// Break if ready message is received
 			if (message.equals("<08:RDY>")) {
+				System.out.println("Got READY message from server");
 				return;
 			}
 
@@ -126,15 +128,18 @@ public class CalcSocketClient {
 	 */
 	public boolean disconnect() {
 		try {
-			// Close In-/OutputStream and Socket
+			// Inform server that you are disconnecting
 			out.writeObject("DISCONNECT");
+			// Close In-/OutputStream and Socket
 			in.close();
 			out.close();
 			cliSocket.close();
 		} catch (IOException e) {
 			// Return false if I/O error occurs
+			e.printStackTrace();
 			return false;
 		}
+		System.out.println("Disconnect was successfull");
 		// Return that disconnect was successful
 		return true;
 	}
@@ -151,12 +156,15 @@ public class CalcSocketClient {
 		// Send message to Server
 		try {
 			out.writeObject(request);
+			System.out.println("Sent '" + request + "' to server");
 		} catch (IOException e1) {
 			// Print exception for debugging purposes
+			System.out.println("Could not send '" + request + "' to server");
 			e1.printStackTrace();
 			return false;
 		}
 
+		// Wait for responses from server
 		while (true) {
 			String message = "";
 			try {
@@ -164,6 +172,7 @@ public class CalcSocketClient {
 				message = (String) in.readObject();
 			} catch (IOException | ClassNotFoundException e) {
 				// Print IO Exceptions for debug purposes and continue processing
+				System.out.println("Could not read a message from the server");
 				e.printStackTrace();
 			}
 
@@ -186,6 +195,7 @@ public class CalcSocketClient {
 
 			// End calculation if 'FIN' message is received
 			if (message.equals("<08:FIN>")) {
+				System.out.println("Request was processed by server");
 				return true;
 			}
 		}

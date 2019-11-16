@@ -40,8 +40,10 @@ public class CalcSocketServer extends Thread {
 		try {
 			// Start new server socket at given port
 			srvSocket = new ServerSocket(port);
+		    System.out.println("Server-Socket opened at port: " + port);
 		} catch (IOException e) {
 			// Crash if you cant open server socket
+			System.err.println("Could not open Server Socket at port: " + port);
 			e.printStackTrace();
 			System.exit(-1);
 		}
@@ -58,10 +60,12 @@ public class CalcSocketServer extends Thread {
 			}
 			
 			// Create and start a new session for new client
+			System.out.println("Connected to new client");
 			CalculationSession newSession;
 			try {
 				newSession = new CalculationSession(cliSocket);
 				newSession.run();
+				System.out.println("Started a new Session for client");
 			} catch (RemoteException e) {
 				// Print remote exception for debugging purposes
 				e.printStackTrace();

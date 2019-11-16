@@ -43,6 +43,7 @@ public class CalculationSession implements Runnable {
 			in = new ObjectInputStream(cliSocket.getInputStream());
 			// Send READY-Message to client
 			out.writeObject("<08:RDY>");
+			System.out.println("Sent READY message to client. Now waiting for requests...s");
 
 			// Process incoming messages
 			String message = "";
@@ -53,6 +54,7 @@ public class CalculationSession implements Runnable {
 					in.close();
 					out.close();
 					cliSocket.close();
+					System.out.println("Client disconnected, ending session.");
 					return;
 				}
 				// Respond with OK to each message (besides disconnect)
@@ -62,6 +64,7 @@ public class CalculationSession implements Runnable {
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			// End session if failures occur
+			System.err.println("Could not read message from client");
 			e.printStackTrace();
 			return;
 		}
@@ -79,6 +82,7 @@ public class CalculationSession implements Runnable {
 		Matcher matcher = patternMessage.matcher(message);
 		// If message valid
 		if (matcher.matches()) {
+			System.out.println("Got a syntactically correct request from client");
 			String inputMessage = matcher.group(1); // Full message (without stuff before "<" and after ">"
 			String inputLength = matcher.group(2); // Length of Message (digits at beginning)
 			String inputContent = matcher.group(3).toUpperCase(); // Contents of message
@@ -86,6 +90,7 @@ public class CalculationSession implements Runnable {
 			// Return basic error if given message length does not match the message
 			if (inputMessage.length() != Integer.parseInt(inputLength)) {
 				out.writeObject("<08:ERR>");
+				System.err.println("Length from message does not match real length");
 				return;
 			}
 
@@ -99,18 +104,22 @@ public class CalculationSession implements Runnable {
 				case "ADD":
 					calcOp = content;
 					replyToMessageContent(content, "OK");
+					System.out.println("Reply to correct '" + content + "' operator");
 					break;
 				case "SUB":
 					calcOp = content;
 					replyToMessageContent(content, "OK");
+					System.out.println("Reply correct '" + content + "' operator");
 					break;
 				case "MUL":
 					calcOp = content;
 					replyToMessageContent(content, "OK");
+					System.out.println("Reply to correct '" + content + "' operator");
 					break;
 				case "RES":
 					calcOp = content;
 					replyToMessageContent(content, "OK");
+					System.out.println("Reply to correct '" + content + "' operator");
 					break;
 				case "":
 					// Ignore empty strings that are not removed during the string-split
@@ -121,16 +130,18 @@ public class CalculationSession implements Runnable {
 						int value = Integer.valueOf(content);
 						// If content is number, then check if calculation operation is set
 						if (calcOp == null) {
-							// Error if content is neither number nor calculation operation
 							replyToMessageContent(content, "ERR");
+							System.out.println("Operator is '" + content + "', but no calc operation is set");
 							break;
 						}
 						// Perform calculation with number
 						performCalcOperation(value, calcOp);
 						replyToMessageContent(content, "OK");
+						System.out.println("Reply to correct '" + content + "' operator");
 					} catch (NumberFormatException e) {
 						// Error if content is neither number nor calculation operation
 						replyToMessageContent(content, "ERR");
+						System.out.println("Reply to incorrect '" + content + "' operator");
 					}
 				}
 			}
@@ -138,6 +149,7 @@ public class CalculationSession implements Runnable {
 
 		// Reply to client with 'FIN' after processing the whole message
 		out.writeObject("<08:FIN>");
+		System.out.println("Sent FIN message to client");
 	}
 
 	/**
@@ -152,12 +164,15 @@ public class CalculationSession implements Runnable {
 		switch (calcOp) {
 		case "ADD":
 			calc.add(value);
+			System.out.println("Added value: " + value + " to result");
 			break;
 		case "SUB":
 			calc.subtract(value);
+			System.out.println("Subtracted value: " + value + " from result");
 			break;
 		case "MUL":
 			calc.multiply(value);
+			System.out.println("Multiplied value: " + value + " to result");
 			break;
 		}
 	}

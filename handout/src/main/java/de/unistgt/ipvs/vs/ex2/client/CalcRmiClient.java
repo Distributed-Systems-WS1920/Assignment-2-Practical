@@ -49,9 +49,11 @@ public class CalcRmiClient {
 		try {
 			ICalculationFactory factory = (ICalculationFactory) Naming.lookup(url);
 			this.calc = factory.getSession();
+			System.out.println("Got Remote-Factory and created Session from it");
 
 		} catch (Exception e) {
 			// Log error if something went wrong
+			System.out.println("Could not obtain remote Factory");
 			e.printStackTrace();
 			return false;
 		}
@@ -75,17 +77,21 @@ public class CalcRmiClient {
 				switch (calcMode) {
 				case ADD:
 					calc.add(number);
+					System.out.println("Added number: " + number);
 					break;
 				case SUB:
 					calc.subtract(number);
+					System.out.println("Subtracted number: " + number);
 					break;
 				case MUL:
 					calc.multiply(number);
+					System.out.println("Multiplied number: " + number);
 					break;
 				}
 			}
 		} catch (RemoteException e) {
 			// Print remote exception for debugging purposes
+			System.out.println("Could not perform remote calculation");
 			e.printStackTrace();
 			// Return that something went wrong
 			return false;
