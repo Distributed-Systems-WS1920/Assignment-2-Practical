@@ -2,9 +2,6 @@ package de.unistgt.ipvs.vs.ex2.server;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.ExportException;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.util.logging.Level;
@@ -18,13 +15,11 @@ public class CalcRmiServer extends Thread {
 	private String regHost;
 	private String objName;
 	String url; // Please use this variable to bind the object.
-	private Registry registry = null;
 
 	public CalcRmiServer(String regHost, String objName) {
 		this.regHost = regHost;
 		this.objName = objName;
 		this.url = "rmi://" + regHost + "/" + objName;
-		this.registry = null;
 	}
 
 	@Override
@@ -35,23 +30,11 @@ public class CalcRmiServer extends Thread {
 		}
 
 		try {
-			// Create registry if none exists yet
-			if (registry == null) {
-				try {
-					// Try to create registry
-					LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-					// Get created registry
-					registry = LocateRegistry.getRegistry(regHost);
-				} catch (ExportException e) {
-					// If creation fails due to ExportException, it might be that there is already a registry running
-					registry = LocateRegistry.getRegistry(regHost);
-				}
-
-			}
-			// Bind our service to the given name
-			Naming.bind(url, new CalculationImplFactory());
+			// Bind our service to the given url
+			Naming.rebind(url, new CalculationImplFactory());
+			System.out.println("Binding of Factory was successful!");
 		} catch (Exception e) {
-			System.err.println("Server is not connected!");
+			System.err.println("Object binding failed!");
 			e.printStackTrace();
 		}
 	}
