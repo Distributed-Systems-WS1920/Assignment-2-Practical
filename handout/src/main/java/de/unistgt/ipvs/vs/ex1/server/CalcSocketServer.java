@@ -64,7 +64,7 @@ public class CalcSocketServer extends Thread {
 			CalculationSession newSession;
 			try {
 				newSession = new CalculationSession(cliSocket);
-				newSession.run();
+				newSession.start();
 				System.out.println("Started a new Session for client");
 			} catch (RemoteException e) {
 				// Print remote exception for debugging purposes

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="de.unistgt.ipvs.vs.ex1.TestCalc" tests="6" skipped="0" failures="0" errors="0" timestamp="2019-11-16T16:41:47" hostname="DESKTOP-MBLC0JR" time="0.09">
+<testsuite name="de.unistgt.ipvs.vs.ex1.TestCalc" tests="6" skipped="0" failures="0" errors="0" timestamp="2019-11-16T16:45:49" hostname="DESKTOP-MBLC0JR" time="0.088">
   <properties/>
-  <testcase name="test1" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.054"/>
-  <testcase name="test2" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.007"/>
-  <testcase name="test3" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.006"/>
-  <testcase name="test4" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.008"/>
-  <testcase name="test5" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.007"/>
-  <testcase name="test6" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.006"/>
+  <testcase name="test1" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.053"/>
+  <testcase name="test2" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.006"/>
+  <testcase name="test3" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.007"/>
+  <testcase name="test4" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.007"/>
+  <testcase name="test5" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.008"/>
+  <testcase name="test6" classname="de.unistgt.ipvs.vs.ex1.TestCalc" time="0.005"/>
   <system-out><![CDATA[Server-Socket opened at port: 12345
 Connected to new client
 Sent READY message to client. Now waiting for requests...s
@@ -144,10 +144,10 @@ Reply to correct 'MUL' operator
 Multiplied value: -2 to result
 Reply to correct '-2' operator
 Reply to correct 'RES' operator
-Sent FIN message to client
 Request was processed by server
-Disconnect was successfull
+Sent FIN message to client
 Client disconnected, ending session.
+Disconnect was successfull
 Started a new Session for client
 Server-Socket opened at port: 12349
 Connected to new client

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * Add fields and methods to this class as necessary to fulfill the assignment.
  */
-public class CalculationSession implements Runnable {
+public class CalculationSession extends Thread {
 
 	private Socket cliSocket; // --> Socket of the connected client of current thread
 	private ObjectOutputStream out;
